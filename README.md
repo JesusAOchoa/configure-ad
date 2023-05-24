@@ -42,7 +42,6 @@ After connecting to both VMs using Remote Desktop, to ensure connectivity I init
 </p>
 <img src="https://i.imgur.com/dnYvUTl.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
-<img src="https://i.imgur.com/8SRk3AF.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
 <p>
 Now we will log back into DC-1 to install Active Directory Domain Services (AD DS) from the Server Manager Dashboard. Once AD DS was installed, I Promoted the VM to Domain Controller so that it could manage devices and accounts on the domain. I setup a new forest as "mydomain.com" afterwards restart then log back into DC-1 as user: "mydomain.com\labuser". If you performed the steps properly you should be able to run AD Users & Computers as shown below.
@@ -56,11 +55,9 @@ Active Directory is all set up! Let's create two(2) Organizational Units (OU) na
 </p> 
 <img src="https://i.imgur.com/5GUzjzt.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
-<img src="https://i.imgur.com/7lZfJaJ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <p>
 In order to cintinue setting up my domain, I will join Client-1 to the domain (mydomain.com).From the azure portal we will change client-1's DNS settings to the DC's Private IP address. After you do that restart Client-1 from within the Azure portal. Our picture below shows verification that client-1 is on the DC-1 DNS.
 </p>
-<img src="https://i.imgur.com/NGw6Dft.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 
 Now we will set up remote desktop for non-administrative users on Client-1. We have to log into Client-1 as an admin and open system properties. Click on "Remote Desktop", allow "domain users" access to remote desktop. Enabling this for Domain Users would allow for any user accounts in the domain to be able to log into Client-1 as a normal user.
@@ -80,15 +77,12 @@ In order to unlock a user's account, right click the user account and click "Pro
 Click on "Unlock Account." You can also right click the user account and "Reset Password..."
 
 <p>
-<img src="https://i.imgur.com/HTcYBBU.png" height="80%" width="80%" alt="49"/>
 </p>
 
 <p>
-<img src="https://i.imgur.com/lNfDusu.png" height="80%" width="80%" alt="50"/>
 </p>
 
 <p>
-<img src="https://i.imgur.com/HrMlyi7.png" height="80%" width="80%" alt="51"/>
 </p>
 
 Thank you for checking out my Active Directory tutorial! I hope you were able to learn and build some intuition on how to use Active Directory. I would suggest doing this exercise several times in order to build the knowledge and skills in Active Directory. Especially if you are trying to shoot for an IT job, where Active Directory is used heavily. 
