@@ -18,64 +18,64 @@ This tutorial outlines the implementation of on-premises Active Directory within
 - Windows Server 2022
 - Windows 10 (21H2)
 
-<h2>High-Level Deployment and Configuration Steps</h2>
+<h2>List format</h2>
 
-- Step 1: Create 2 virtual machines, one with Windows 10 (Client VM) and the other with Windows Server 2022 (DC/Domain Controller VM)
-- Step 2: Set the DC’s NIC private IP address from Dynamic to Static
-- Step 3: Connect to both VMs using Remote Desktop
-- Step 4: Initiate a perpetual ping from the Client to the DC; if there is no reply, enable Core Networking Diagnostics in the DC’s firewall
-- Step 5: Install Active Directory Domain Services on the DC and promote it to a domain controller
-- Step 6: Create an admin account and Organizational Units (OU) in Active Directory Users and Computers (ADUC), then log back in using the admin account
-- Step 7: Set the Client’s DNS settings to the DC’s Private IP address, then join the Client to the DC
-- Step 8: Enable Remote Desktop for domain users to access the Client
-- Step 9: Create user accounts using a PowerShell script (run PowerShell ISE as administrator)
-- Step 10: Connect to the Client with Remote Desktop using one of the newly created user accounts
+- Step 1: Deploy two different virtual machines, one with Windows 10, and another with windows 2022 server. The serve will be the DC, and the other will be client.
+- Step 2: Format the DC's private IP address from dynamic, to static in order to keep it consistent within the virtual network.
+- Step 3: Connect to both Virtual Machines using remote desktop connection, and make sure to login
+- Step 4: Start an endless ping from the Client to the DC. If there are no replies, enable Core Networking Diagnostics within the firewall of the DC.
+- Step 5: Install Active Directory Domain Services on the DC and promote it as a domain controller.
+- Step 6: Establish an administrative account and create Organizational Units (OU) within Active Directory Users and Computers (ADUC). Subsequently, log back in using the admin account.
+- Step 7: Configure the Client's DNS settings to use the Private IP address of the DC, and proceed to connect the Client to the DC.
+- Step 8: Activate Remote Desktop to allow domain users to access the Client.
+- Step 9: Make user accounts using a PowerShell script found <a href="https://github.com/joshmadakor1/AD_PS/blob/master/Generate-Names-Create-Users.ps1">here</a> (run PowerShell ISE as administrator)
+- Step 10: Connect to the client PC using remote desktop with one of the new accounts generated.
 
-<h2>Deployment and Configuration Steps</h2>
+<h2>Deployment & Configuration Steps</h2>
 
-Let's start our lab by creating two Virtual Machines (VMs) in Azure, one with Windows Server 2022 and the other with Windows 10.Make sure both VMs are in the same Net work and subnet. The Windows Server 2022 VM would serve as the Domain Controller (DC) and the Windows 10 VM would serve as the Client machine. Also, I set the DC’s NIC (Network Inteface Controller) private IP address from Dynamic to Static, so that later in the lab when I configured the Client’s DNS settings (DC’s private IP address), the Static IP address would make it easier for any services to access where a device is. Static IPs are better for remote access to a computer. A static IP address-enabled device does not need the device to send renewal requests.
+Let's begin our lab by deploying two Virtual Machines (VMs) in Azure. One VM will be running Windows Server 2022, while the other will run Windows 10. It is important to ensure that both VMs are within the same network and subnet. The Windows Server 2022 VM will serve as the Domain Controller (DC), while the Windows 10 VM will serve as the Client machine.
+
+Furthermore, I have configured the DC's Network Interface Controller (NIC) to have a static IP address instead of a dynamic one. This setting will simplify the configuration process later in the lab when we set the Client's DNS settings to the DC's private IP address. Having a static IP address makes it more convenient for remote access to a computer, as there is no need for the device to send renewal requests
 <p>
 <img src="https://i.imgur.com/xMWxaSv.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <p>
-After connecting to both VMs using Remote Desktop, to ensure connectivity I initiated a perpetual ping from the Client to the DC. The requests were timing out, so I opened Windows Defender Firewall in the DC and enabled Core Networking Diagnostics (ICMPv4 protocol). This allowed the DC to reply to the requests as shown in the command-line interface (CLI).
+Upon establishing Remote Desktop connections to both VMs, I initiated an ongoing ping from the Client to the DC to verify connectivity. However, the ping requests were timing out. To resolve this, I accessed the Windows Defender Firewall on the DC and enabled Core Networking Diagnostics, specifically the ICMPv4 protocol. This adjustment enabled the DC to respond to the ping requests, as indicated in the command-line interface (CLI).
 </p>
 <img src="https://i.imgur.com/dnYvUTl.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 
 <p>
-Now we will log back into DC-1 to install Active Directory Domain Services (AD DS) from the Server Manager Dashboard. Once AD DS was installed, I Promoted the VM to Domain Controller so that it could manage devices and accounts on the domain. I setup a new forest as "mydomain.com" afterwards restart then log back into DC-1 as user: "mydomain.com\labuser". If you performed the steps properly you should be able to run AD Users & Computers as shown below.
+Next, we will log back into DC-1 and proceed to install Active Directory Domain Services (AD DS) using the Server Manager Dashboard. After successfully installing AD, I promoted the VM to become a Domain Controller, granting it the ability to manage devices and accounts within the domain. I then configured a new forest with the domain name "mydomain.com". Following the configuration, I restarted the VM and logged back in as the user "mydomain.com\labuser". If the steps were executed correctly, you should now be able to access and run AD Users & Computers as depicted below.
 <p>
 <img src="https://i.imgur.com/v7QHRGf.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p> 
 <img src="https://i.imgur.com/FlamLHS.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p> 
 <p>
-Active Directory is all set up! Let's create two(2) Organizational Units (OU) named _ADMINS and _EMPLOYEES. Now, let's create a new User "Jane Doe" as an Administrator with the username: Jane_admin and add her as a member of Domain Admins Security Group. Logged out from the default account we were in and logged back in as jane.
+The setup of Active Directory is complete! We will now proceed to create two Organizational Units (OU) named "_ADMINS" and "_EMPLOYEES". Additionally, we will create a new user named "Jane Doe" with the username "Jane_admin" and assign her the role of Administrator. Jane will be added as a member of the Domain Admins Security Group. To finalize this step, we will log out from the default account and log back in using Jane's credentials.
 </p> 
 <img src="https://i.imgur.com/5GUzjzt.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 <p>
-In order to cintinue setting up my domain, I will join Client-1 to the domain (mydomain.com).From the azure portal we will change client-1's DNS settings to the DC's Private IP address. After you do that restart Client-1 from within the Azure portal. Our picture below shows verification that client-1 is on the DC-1 DNS.
+To proceed with the domain setup, I will now join Client-1 to the domain "mydomain.com". Using the Azure portal, we will modify Client-1's DNS settings to reflect the Private IP address of the DC. Once the DNS settings are updated, we will restart Client-1 from within the Azure portal. The provided image below serves as verification that Client-1 is successfully connected to the DC-1 DNS.
 </p>
 </p>
 
-Now we will set up remote desktop for non-administrative users on Client-1. We have to log into Client-1 as an admin and open system properties. Click on "Remote Desktop", allow "domain users" access to remote desktop. Enabling this for Domain Users would allow for any user accounts in the domain to be able to log into Client-1 as a normal user.
+To enable remote desktop access for non-administrative users on Client-1, we need to log in to Client-1 as an administrator and access the system properties. Within the system properties, select "Remote Desktop" and grant access to "domain users". By enabling this setting for Domain Users, any user accounts within the domain will be able to log into Client-1 as regular users.
 </p>
 <img src="https://i.imgur.com/fZ2gcOV.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br /> 
 </p>
-Finally, to verify that noraml users can RDP into Client-1, I will use a Powershell script to generate 10,000 (Thousands) of users into the domain. After the users are created we will randomly select one and RDP into Client-1.
+To confirm the ability of normal users to remotely desktop into Client-1, I will utilize a PowerShell script to generate a substantial number of users, specifically 10,000. Once the users are successfully created, we will randomly select one user and establish a remote desktop connection to Client-1. This test will validate the accessibility of normal users to Client-1 via RDP. Also the PowerShell code can be found <a href="https://github.com/joshmadakor1/AD_PS/blob/master/Generate-Names-Create-Users.ps1">here</a>
 </p>
 <img src="https://i.imgur.com/QBffW1K.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 <img src="https://i.imgur.com/Utf0x7S.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 
-<h3>Bonus Step: How to unlock users' accounts and reset passwords</h3>
-In order to unlock a user's account, right click the user account and click "Properties." 
-Click on "Unlock Account." You can also right click the user account and "Reset Password..."
-
+<h3>Bonus Step: How to lock and unlock users' accounts and reset passwords</h3>
+To unlock a user's account, simply right-click on the user account and select "Properties." From there, navigate to the "Account" tab and click on "Unlock Account." Additionally, you can right-click on the user account and choose "Reset Password..." to reset the password if needed.
 <p>
 </p>
 
@@ -85,8 +85,8 @@ Click on "Unlock Account." You can also right click the user account and "Reset 
 <p>
 </p>
 
-Thank you for checking out my Active Directory tutorial! I hope you were able to learn and build some intuition on how to use Active Directory. I would suggest doing this exercise several times in order to build the knowledge and skills in Active Directory. Especially if you are trying to shoot for an IT job, where Active Directory is used heavily. 
+Thank you for exploring my Active Directory tutorial! I trust that you gained valuable insights and developed a better understanding of how to utilize Active Directory. I recommend repeating this exercise multiple times to reinforce your knowledge and proficiency in Active Directory. This is particularly beneficial if you are aiming for an IT role where Active Directory is extensively utilized.
 
 <p></p>
 
-**REMEMBER TO DELETE YOUR RESOURCES ONCE YOU ARE DONE WITH THE LAB!**
+**REMEMBER TO DELETE YOUR RESOURCES AS TO NOT EAT UP YOUR CREDIT**
