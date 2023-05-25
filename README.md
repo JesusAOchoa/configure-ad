@@ -18,7 +18,7 @@ This tutorial outlines the implementation of on-premises Active Directory within
 - Windows Server 2022
 - Windows 10 (21H2)
 
-<h2>List format</h2>
+<h2>List format/summary</h2>
 
 - Step 1: Deploy two different virtual machines, one with Windows 10, and another with windows 2022 server. The serve will be the DC, and the other will be client.
 - Step 2: Format the DC's private IP address from dynamic, to static in order to keep it consistent within the virtual network.
